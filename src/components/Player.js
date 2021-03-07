@@ -1,65 +1,74 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 
 // Import Font Awesome Icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay, faPause, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlay,
+  faPause,
+  faAngleLeft,
+  faAngleRight
+} from "@fortawesome/free-solid-svg-icons";
 
-const Player = ({ currentSong, isPlaying, setIsPlaying }) => {
-    // Ref
-    const audioRef = useRef(null)
-
-    // Event Handlers
-    const playSongHandler = () => {
-        if (isPlaying) {
-            audioRef.current.pause()
-            setIsPlaying(!isPlaying)
-        } else {
-            audioRef.current.play()
-            setIsPlaying(!isPlaying)
-        }
+const Player = ({
+  currentSong,
+  isPlaying,
+  setIsPlaying,
+  songInfo,
+  setSongInfo,
+  audioRef
+}) => {
+  // Event Handlers
+  const playSongHandler = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(!isPlaying);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(!isPlaying);
     }
+  };
 
-    const timeUpdateHandler = (e) => {
-        const current = e.target.currentTime
-        const duration = e.target.duration
+  const dragHandler = (e) => {
+    audioRef.current.currentTime = e.target.value;
+    setSongInfo({ ...songInfo, current: e.target.value });
+  };
 
-        setSongInfo({ ...songInfo, current, duration })
-    }
-
-    const dragHandler = (e) => {
-        audioRef.current.currentTime = e.target.value
-        setSongInfo({ ...songInfo, current: e.target.value })
-    }
-
-    const getTime = (time) => {
-        return (
-            Math.floor(time / 60) + ':' + ('0' + Math.floor(time % 60)).slice(-2)
-        )
-    }
-
-    // State
-    const [songInfo, setSongInfo] = useState({
-        current: 0,
-        duration: 0
-    })
-
+  const getTime = (time) => {
     return (
-        <div className="player">
-            <div className="time-control">
-                <p>{getTime(songInfo.current)}</p>
-                <input min="0" max={songInfo.duration} value={songInfo.current} onChange={dragHandler} type="range" />
-                <p>{getTime(songInfo.duration)}</p>
-            </div>
+      Math.floor(time / 60) + ":" + ("0" + Math.floor(time % 60)).slice(-2)
+    );
+  };
 
-            <div className="play-control">
-                <FontAwesomeIcon className="skip-back" size="2x" icon={faAngleLeft} />
-                <FontAwesomeIcon onClick={playSongHandler} className="play" size="2x" icon={isPlaying ? faPause : faPlay} />
-                <FontAwesomeIcon className="skip-forward" size="2x" icon={faAngleRight} />
-            </div>
+  return (
+    <div className="player">
+      <div className="time-control">
+        <p>{getTime(songInfo.current)}</p>
+        <input
+          min="0"
+          max={songInfo.duration}
+          value={songInfo.current}
+          onChange={dragHandler}
+          type="range"
+        />
+        <p>{getTime(songInfo.duration)}</p>
+      </div>
 
-            <audio onTimeUpdate={timeUpdateHandler} onLoadedMetadata={timeUpdateHandler} ref={audioRef} src={currentSong.audio}></audio>
-        </div>
-    )
-}
+      <div className="play-control">
+        <FontAwesomeIcon className="skip-back" size="2x" icon={faAngleLeft} />
+        <FontAwesomeIcon
+          onClick={playSongHandler}
+          className="play"
+          size="2x"
+          icon={isPlaying ? faPause : faPlay}
+        />
+        <FontAwesomeIcon
+          className="skip-forward"
+          size="2x"
+          icon={faAngleRight}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default Player;

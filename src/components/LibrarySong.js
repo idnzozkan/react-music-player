@@ -1,9 +1,19 @@
 import { computeHeadingLevel } from "@testing-library/react";
 import React from "react";
 
-const LibrarySong = ({ song, setCurrentSong }) => {
+const LibrarySong = ({ song, setCurrentSong, audioRef, isPlaying }) => {
   const songSelectHandler = () => {
     setCurrentSong(song);
+
+    if (isPlaying) {
+      const playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise.then((audio) => {
+          audioRef.current.play();
+        });
+      }
+    }
   };
 
   return (
