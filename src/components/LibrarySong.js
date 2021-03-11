@@ -1,6 +1,5 @@
 import { computeHeadingLevel } from "@testing-library/react";
 import React from "react";
-import { playAudio } from "../util";
 
 const LibrarySong = ({
   song,
@@ -9,11 +8,11 @@ const LibrarySong = ({
   audioRef,
   isPlaying
 }) => {
-  const songSelectHandler = () => {
-    setCurrentSong(song);
+  const songSelectHandler = async () => {
+    await setCurrentSong(song);
 
     // keep it as playing if it is playing
-    playAudio(isPlaying, audioRef);
+    if (isPlaying) audioRef.current.play();
   };
 
   return (
